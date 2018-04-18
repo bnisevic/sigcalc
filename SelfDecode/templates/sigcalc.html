@@ -1,0 +1,160 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="A/B split test significance calculator">
+    <meta name="author" content="{% block author %}Bojan Nišević{% endblock %}">
+    <title>{% block title %}SigCalc{% endblock %}</title>
+    <link rel="stylesheet"
+          href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+  </head>
+  <body >
+    <header class="text-center mt-5">
+      <h1>
+        A/B split test significance calculator
+      </h1>
+    </header>
+    <main class="mt-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 offset-md-2 col-xs-10 offset-xs-1">
+            <form method="post" class="needs-validation">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-6 col-xs-12 mb-3">
+                  <label for="visitorsA">Number of Visitors A:</label>
+                  <input class="form-control"
+                         name="visitorsA"
+                         id="visitorsA"
+                         placeholder="Control"
+                         value=""
+                         required=""
+                         type="text">
+                  <div class="invalid-feedback">
+                     Control number of visitors is required.
+                  </div>
+                </div>
+                <div class="col-md-6 col-xs-12 mb-3">
+                  <label for="visitorsB">Number of Visitors B:</label>
+                  <input class="form-control"
+                         name="visitorsB"
+                         id="visitorsB"
+                         placeholder="Variation"
+                         value=""
+                         required=""
+                         type="text">
+                  <div class="invalid-feedback">
+                    Variation number of visitors is required.
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-xs-12 mb-3">
+                  <label for="convertedA">Number of Conversions A:</label>
+                  <input class="form-control"
+                         name="convertedA"
+                         id="convertedA"
+                         placeholder="Control"
+                         value=""
+                         required=""
+                         type="text">
+                  <div class="invalid-feedback">
+                    Control number of conversions is required.
+                  </div>
+                </div>
+                <div class="col-md-6 col-xs-12 mb-3">
+                  <label for="convertedB">Number of Conversions B:</label>
+                  <input class="form-control"
+                         name="convertedB"
+                         id="convertedB"
+                         placeholder="Variation"
+                         value=""
+                         required=""
+                         type="text">
+                  <div class="invalid-feedback">
+                    Variation number of conversions is required.
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-lg btn-primary btn-block">Calculate</button>
+            </form>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-8 offset-md-2 col-xs-10 offset-xs-1">
+            <div class="row">
+                <div class="col-md-6 col-xs-12 text-center">
+                  <h3>P-Value: <span id="pvalue">?</span></h3>
+                </div>
+                <div class="col-md-6 col-xs-12 text-center">
+                  <h3>Significance: <span id="significance">?</span></h3>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+      }
+
+      var csrftoken = getCookie('csrftoken');
+
+            function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+
+      $("form").submit(function(event) {
+          event.preventDefault();
+          $.ajax({
+              type: "POST",
+              url: '',
+              dataType: 'json',
+              data: $("form").serialize(), // serialize all your
+              success: function (data, textStatus) {
+                  //alert(JSON.stringify(data), textStatus);
+                  console.log(data);
+                  $("#pvalue").html(data.pvalue); // append to inner html
+                  $("#significance").html(data.significance);
+              },
+              error: function(xhr, status, e) {
+                  alert(status, e);
+              }
+          });
+      });
+
+    </script>
+  </body>
+</html>
