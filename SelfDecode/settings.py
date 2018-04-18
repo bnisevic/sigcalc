@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import sys
+
 import environ
+import django_heroku
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -85,6 +88,7 @@ WSGI_APPLICATION = 'SelfDecode.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
 DATABASES = {
     'default': env.db(),  # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
 }
@@ -126,3 +130,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+if
+django_heroku.settings(locals())
