@@ -1,1 +1,1 @@
-web: gunicorn SelfDecode.wsgi --log-file -
+web: gunicorn SelfDecode.wsgi:application --log-file -
