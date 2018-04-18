@@ -37,7 +37,7 @@ except ImproperlyConfigured:
     SECRET_KEY = 'b5ry7^t=*nf==g9lt1#z4$jyk&aj!5kwz!vo^e1q!im5lw$d(='
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sigcalc.herokuapp.com', ]
 
 
 # Application definition
@@ -135,5 +135,4 @@ except ImproperlyConfigured:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-    ALLOWED_HOSTS=['sigcalc.herokuapp.com', ]
     django_heroku.settings(locals())
