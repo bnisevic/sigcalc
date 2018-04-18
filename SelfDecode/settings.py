@@ -135,4 +135,5 @@ except ImproperlyConfigured:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+    ALLOWED_HOSTS=['sigcalc.herokuapp.com', ]
     django_heroku.settings(locals())
