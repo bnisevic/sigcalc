@@ -1,2 +1,4 @@
 django
+django-environ
 scipy
+psycopg2-binary
