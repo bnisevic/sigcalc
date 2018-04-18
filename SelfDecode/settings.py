@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 
+from django.core.exceptions import ImproperlyConfigured
+
 import environ
 import django_heroku
 
@@ -22,17 +24,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 sys.path.insert(0, str(BASE_DIR + '/SelfDecode/sigcalc'))
 
-env = environ.Env(DEBUG=(bool, False), )
 environ.Env.read_env(BASE_DIR + '/SelfDecode/settings.env')
+env = environ.Env()
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+try:
+    DEBUG = env('DEBUG')
+    SECRET_KEY = env('SECRET_KEY')
+except ImproperlyConfigured:
+    DEBUG = False
+    SECRET_KEY = 'b5ry7^t=*nf==g9lt1#z4$jyk&aj!5kwz!vo^e1q!im5lw$d(='
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -79,20 +82,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'SelfDecode.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-DATABASES = {
-    'default': env.db(),  # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -131,4 +120,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-django_heroku.settings(locals())
+
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+try:
+    DATABASES = {
+        'default': env.db(),  # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
+    }
+except ImproperlyConfigured:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    django_heroku.settings(locals())
