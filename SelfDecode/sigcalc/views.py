@@ -29,7 +29,7 @@ class SigcalcView(TemplateView):
 
             if post['convertedA'] > post['visitorsA'] or post['convertedB'] > post['visitorsB']:
                 return HttpResponseBadRequest(
-                    content=b'Number of visitors cannot be higher than number of conversions.')
+                    content=b'Number of conversions cannot be higher than number of visitors.')
 
             # Generate observed
             observed = np.array([[notconverted['A'], post['convertedA']], [notconverted['B'], post['convertedB']]])
