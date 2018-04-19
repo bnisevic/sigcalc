@@ -1,4 +1,6 @@
-from django.test import TestCase, override_settings
+import json
+
+from django.test import TestCase
 from .views import SigcalcView
 
 
@@ -19,4 +21,7 @@ class SigcalcTestCase(TestCase):
             ** {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"significance": "No", "pvalue": 0.74}')
+
+        response_content = json.loads(response.content.decode())
+        self.assertEqual(response_content['pvalue'], 0.74)
+        self.assertEqual(response_content['significance'], 'No')

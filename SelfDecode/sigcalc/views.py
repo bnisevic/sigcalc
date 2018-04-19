@@ -19,7 +19,10 @@ class SigcalcView(TemplateView):
         :return:
         """
         if request.is_ajax():
-            post = request.POST
+            post = dict()
+            for key, val in request.POST.items():
+                if key != 'csrfmiddlewaretoken':
+                    post[key] = int(val)
 
             # Calculate not converted
             notconverted = self._get_notconverted(post)
@@ -29,9 +32,7 @@ class SigcalcView(TemplateView):
                     content=b'Number of visitors cannot be higher than number of conversions.')
 
             # Generate observed
-            converted_a = int(post['convertedA'])
-            converted_b = int(post['convertedB'])
-            observed = np.array([[notconverted['A'], converted_a], [notconverted['B'], converted_b]])
+            observed = np.array([[notconverted['A'], post['convertedA']], [notconverted['B'], post['convertedB']]])
 
             # Get result
             result = chi2_contingency(observed)
@@ -56,7 +57,7 @@ class SigcalcView(TemplateView):
         :param post: Data from the AJAX request.
         :return:
         """
-        notconvA = int(post['visitorsA']) - int(post['convertedA'])
-        notconvB = int(post['visitorsB']) - int(post['convertedB'])
+        notconvA = post['visitorsA'] - post['convertedA']
+        notconvB = post['visitorsB'] - post['convertedB']
 
         return {'A': notconvA, 'B': notconvB}
