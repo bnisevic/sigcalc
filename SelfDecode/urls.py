@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 from django.contrib import admin
-from SelfDecode.sigcalc.views import SigcalcView
+from sigcalc.views import SigcalcView
 
 
 urlpatterns = [

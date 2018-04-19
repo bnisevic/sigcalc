@@ -12,7 +12,7 @@ class SigcalcView(TemplateView):
 
     template_name = 'sigcalc.html'
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         """
         If request is ajax throw calculation results in JSON.
 
@@ -42,7 +42,8 @@ class SigcalcView(TemplateView):
 
             return HttpResponse(json.dumps(result))
 
-        return render(request, template_name='sigcalc.html')
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     @staticmethod
     def _get_notconverted(post):

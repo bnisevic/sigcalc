@@ -22,7 +22,8 @@ import django_heroku
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-sys.path.insert(0, str(BASE_DIR + '/SelfDecode/sigcalc'))
+# Insert project into PYTHON_PATH
+sys.path.insert(0, str(BASE_DIR + '/SelfDecode/'))
 
 environ.Env.read_env(BASE_DIR + '/SelfDecode/settings.env')
 env = environ.Env()
@@ -37,7 +38,7 @@ except ImproperlyConfigured:
     SECRET_KEY = 'b5ry7^t=*nf==g9lt1#z4$jyk&aj!5kwz!vo^e1q!im5lw$d(='
 
 
-ALLOWED_HOSTS = ['sigcalc.herokuapp.com', ]
+ALLOWED_HOSTS = ['sigcalc.herokuapp.com', '127.0.0.1', ]
 
 
 # Application definition
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sigcalc',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +68,7 @@ ROOT_URLCONF = 'SelfDecode.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['SelfDecode/templates', ],
+        'DIRS': ['SelfDecode/templates', 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
