@@ -150,7 +150,7 @@
                   $("#significance").html(data.significance);
               },
               error: function(xhr, status, e) {
-                  alert(status, e);
+                  alert(xhr.responseText);
               }
           });
       });

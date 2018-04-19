@@ -1,7 +1,6 @@
 import json
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import TemplateView
 
 import numpy as np
@@ -24,6 +23,10 @@ class SigcalcView(TemplateView):
 
             # Calculate not converted
             notconverted = self._get_notconverted(post)
+
+            if post['convertedA'] > post['visitorsA'] or post['convertedB'] > post['visitorsB']:
+                return HttpResponseBadRequest(
+                    content=b'Number of visitors cannot be higher than number of conversions.')
 
             # Generate observed
             converted_a = int(post['convertedA'])
